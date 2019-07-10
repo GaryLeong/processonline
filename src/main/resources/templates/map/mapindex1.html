@@ -1,0 +1,105 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线地图编辑系统</title>
+    <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+    <!-- jQuery库 -->
+    <script src="/libs/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <link href="/libs/jquery-ui-1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+    <!--OL3库-->
+    <!--<script src="/libs/ol/ol.js" type="text/javascript"></script>-->
+    <script src="/libs/ol/ol-debug.js" type="text/javascript"></script>
+    <link href="/libs/ol/source/ol.css" rel="stylesheet" type="text/css"/>
+    <!--OL3扩展库-->
+    <script src="/libs/ol/source/GoogleMapSource.js" type="text/javascript"></script>
+    <script src="/libs/ol/layer/GoogleMapLayer.js" type="text/javascript"></script>
+    <!-- 第三方插件库 统计图插件 -->
+    <script src="/libs/FusionCharts.js" type="text/javascript"></script>
+    <!-- 第三方插件库 -->
+    <script src="/libs/jquery-ui-1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/libs/jquery.ui.datepicker-zh-CN.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="backgroundDiv">
+</div>
+<!-- 地图容器-->
+<div id="map">
+    <!-- Popup -->
+    <div id="popup" class="ol-popup">
+        <div id="popup-closer" class="ol-popup-closer"></div>
+        <div id="popup-content">
+        </div>
+    </div>
+</div>
+<!-- 功能结果展示 -->
+<div class="LabelList" style="left: 1145px; display: block;">
+    <ul id="labelUL">
+        <li id="tabTitleBg" onclick="showContentDiv(1)" style="background-color: rgb(187, 201, 222);">背景
+        </li>
+        <li id="tabTitleData" onclick="showContentDiv(2)" style="background-color: rgb(211, 210, 210);">地图数据
+        </li>
+    </ul>
+</div>
+<!-- 背景 start -->
+<div class="tabDiv" id="bgDiv" style="display: block;background-color: #ffffff">
+    <div class="bgTop">
+        <div class="titleHeader" onclick="showBackground('bgChange')">
+            背景影像
+        </div>
+        <div class="tabDivContent" id="bgChange">
+            <div class="layerSwitchDiv" onclick="layerSwitch('raster')">
+                <input name="bgData" type="radio" id="rdoRaster" checked/>谷歌遥感图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('terrain')">
+                <input name="bgData" type="radio" id="rdoTerrain"/>谷歌地形图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('vector')">
+                <input name="bgData" type="radio" id="rdoVector"/>谷歌矢量图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('road')">
+                <input name="bgData" type="radio" id="rdoRoad"/>谷歌交通图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('BaiduMap')">
+                <input name="bgData" type="radio" id="rdoBaiduMap"/>百度地图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('BaiduMapSate')">
+                <input name="bgData" type="radio" id="rdoBaiduMapSate"/>百度卫星地图
+            </div>
+            <div class="layerSwitchDiv" onclick="layerSwitch('AMap')">
+                <input name="bgData" type="radio" id="rdoAMap"/>高德卫星地图
+            </div>
+        </div>
+    </div>
+    <div class="bgMain">
+        <div class="titleHeader" onclick="showBackground('bgOverlay')">
+            叠加图层
+        </div>
+        <div class="tabDivContent" id="bgOverlay" style="display: none">
+            <div class="layerSwitchDiv" onclick="overlaySwitch('vector')">
+                <input name="bgData" type="checkbox" id="chkRoad"/>谷歌交通图
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 背景 End -->
+<div class="splitDiv" id="splitBtn" style="right: 290px; background-position: 0px 0px;"></div>
+<!-- 地图数据图层Tab start -->
+<!--<div class="tabDiv" id="mapDataLayerDiv" style="display: block;background-color: #ffffff">
+    <div class="titleHeader" onclick="showBackground('mapLayerDiv')">
+        叠加图层
+    </div>
+    <div class="tabDivContent" id="mapLayerDiv">
+        <div class="layerSwitchDiv" onclick="loadLayerData('road')">
+            <input name="bgData" type="checkbox" id=""/>道路
+        </div>
+    </div>
+</div>-->
+</div>
+<!-- 地图数据图层Tab End -->
+<!-- 系统功能库 -->
+<script src="/js/sysFun1.js" type="text/javascript"></script>
+<script src="/libs/ol/source/BaiduMapSource.js" type="text/javascript"></script>
+<script src="/libs/ol/source/AMapSource.js" type="text/javascript"></script>
+</body>
+</html>

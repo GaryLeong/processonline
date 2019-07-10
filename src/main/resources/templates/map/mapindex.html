@@ -1,0 +1,537 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线地图编辑系统</title>
+    <link href="/css/map.css" rel="stylesheet" type="text/css"/>
+    <!-- jQuery库 -->
+    <script src="/libs/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <!--layui-->
+    <script src="/libs/layui/layui.js" type="text/javascript"></script>
+    <!--<link href="/libs/layui/css/layui.css" rel="stylesheet" type="text/css"/>-->
+    <!--OL3库-->
+    <script src="/libs/ol/source/ol.js" type="text/javascript"></script>
+    <link href="/libs/ol/source/ol.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="backgroundDiv">
+</div>
+<div id="id-container" class="id-container" dir="ltr">
+    <div id="sidebar" style="min-width: 280px; max-width: 85%; width: 358px; margin-left: -358px;" class="collapsed">
+        <div id="sidebar-resizer"></div>
+        <div class="feature-list-pane">
+            <div class="header fillL cf"><h3>搜索要素</h3></div>
+            <div class="search-header">
+                <input placeholder="搜索" type="search" autocomplete="new-password" autocorrect="off"
+                       autocapitalize="off" spellcheck="false" id="searchInput">
+                <img src="/svg/iD-sprite/icons/icon-search.svg" class="icon pre-text">
+            </div>
+            <div class="inspector-body">
+                <div class="feature-list cf filtered" id="featurelist">
+                    <button disabled="" class="no-results-item" style="display: none;">
+                        <img src="/svg/iD-sprite/icons/icon-alert.svg" class="icon pre-text">
+                        <span class="entity-name">在可见地图区域没有结果</span>
+                    </button>
+
+                    <button class="geocode-item" style="display: none;">
+                        <div class="label"><span class="entity-name">在全球搜索...</span></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="inspector-hidden inspector-wrap fr"></div>
+    </div>
+    <div id="content" class="active">
+        <div id="bar" class="fillD">
+            <div class="toolbar-item sidebar-toggle" id="sidebarToggleBtn">
+                <div class="item-content">
+                    <button class="bar-button" tabindex="-1" id="barBtn">
+                        <div class="tooltip tooltip-0 bottom" style="left: -20px; top: 40px;">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                                <div class="tooltip-text"><span>切换侧边栏。</span></div>
+                                <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">`</span></div>
+                            </div>
+                        </div>
+                        <img src="/svg/iD-sprite/icons/icon-sidebar-left.svg" class="icon ">
+                    </button>
+                </div>
+                <div class="item-label">Inspect</div>
+            </div>
+            <div class="toolbar-item spacer"></div>
+            <div class="toolbar-item old-modes">
+                <div class="item-content">
+                    <div class="joined" style="display: flex;">
+                        <button tabindex="-1" class="add-point add-button bar-button disabled">
+                            <div class="tooltip tooltip-1 bottom" style="left: -68px; top: 40px;">
+                                <div class="tooltip-arrow"></div>
+                                <div class="tooltip-inner">
+                                    <div class="tooltip-text"><span>添加餐馆、纪念碑、邮筒或其他点到地图上。</span></div>
+                                    <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">1</span></div>
+                                </div>
+                            </div>
+                            <img src="/svg/iD-sprite/icons/icon-point.svg" class="icon ">
+                            <span class="label">点</span></button>
+                        <button tabindex="-1" class="add-line add-button bar-button disabled">
+                            <div class="tooltip tooltip-1 bottom" style="left: -5px; top: 40px;">
+                                <div class="tooltip-arrow"></div>
+                                <div class="tooltip-inner">
+                                    <div class="tooltip-text"><span>添加公路、街道、人行道、河渠或其他线到地图上。</span></div>
+                                    <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">2</span></div>
+                                </div>
+                            </div>
+                            <img src="/svg/iD-sprite/icons/icon-line.svg" class="icon ">
+                            <span class="label">线</span></button>
+                        <button tabindex="-1" class="add-area add-button bar-button disabled">
+                            <div class="tooltip tooltip-1 bottom" style="left: 123px; top: 40px;">
+                                <div class="tooltip-arrow"></div>
+                                <div class="tooltip-inner">
+                                    <div class="tooltip-text"><span>在地图上添加公园、建筑物、湖泊或其他区域。</span></div>
+                                    <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">3</span></div>
+                                </div>
+                            </div>
+                            <img src="/svg/iD-sprite/icons/icon-area.svg" class="icon ">
+                            <span class="label">区域</span></button>
+                    </div>
+                </div>
+                <div class="item-label">Add Feature</div>
+            </div>
+            <div class="toolbar-item spacer"></div>
+            <div class="toolbar-item undo-redo">
+                <div class="item-content">
+                    <button class="disabled undo-button bar-button" disabled="">
+                        <div class="tooltip tooltip-2 bottom">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner"></div>
+                        </div>
+                        <img src="/svg/iD-sprite/icons/icon-undo.svg" class="icon ">
+                    </button>
+                    <button class="disabled redo-button bar-button" disabled="">
+                        <div class="tooltip tooltip-2 bottom">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner"></div>
+                        </div>
+                        <img src="/svg/iD-sprite/icons/icon-redo.svg" class="icon ">
+                    </button>
+                </div>
+                <div class="item-label">Undo / Redo</div>
+            </div>
+            <div class="toolbar-item save">
+                <div class="item-content">
+                    <button class="save disabled bar-button" tabindex="-1">
+                        <div class="tooltip tooltip-3 bottom" style="left: -6px; top: 40px;">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner">
+                                <div class="tooltip-text"><span>没有待保存变更。</span></div>
+                                <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">Ctrl+S</span></div>
+                            </div>
+                        </div>
+                        <img src="/svg/iD-sprite/icons/icon-save.svg" class="icon ">
+                        <span class="count">0</span></button>
+                </div>
+                <div class="item-label">保存</div>
+            </div>
+        </div>
+        <!-- 地图容器-->
+        <div id="map"></div>
+        <div class="map-controls">
+            <div class="map-control zoombuttons">
+                <button tabindex="-1" class="zoom-in" id="zoom-in">
+                    <div class="tooltip tooltip-5 left" style="left: -160px; top: -20px;">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner">
+                            <div class="tooltip-text"><span>放大</span></div>
+                            <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">+</span></div>
+                        </div>
+                    </div>
+                    <img src="/svg/iD-sprite/icons/icon-plus.svg" class="icon light">
+                </button>
+                <button tabindex="-1" class="zoom-out" id="zoom-out">
+                    <div class="tooltip tooltip-5 left" style="left: -160px; top: -20px;">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner">
+                            <div class="tooltip-text"><span>缩小</span></div>
+                            <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">-</span></div>
+                        </div>
+                    </div>
+                    <img src="/svg/iD-sprite/icons/icon-minus.svg" class="icon light">
+                </button>
+            </div>
+            <div class="map-control geolocate-control">
+                <button tabindex="-1" data-original-title="显示我的位置" id="geolocateBtn">
+                    <img src="/svg/iD-sprite/icons/icon-geolocate.svg" class="icon light">
+                    <div class="tooltip tooltip-6 left" style="left: -160px; top: 0px;">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner">显示我的位置</div>
+                    </div>
+                </button>
+            </div>
+            <!-- 背景设置 -->
+            <div class="map-control background-control">
+                <button tabindex="-1" id="setLayersBtn">
+                    <img src="/svg/iD-sprite/icons/icon-layers.svg" class="icon light">
+                    <div class="tooltip tooltip-7 left" style="left: -160px; top: -20px;">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner">
+                            <div class="tooltip-text"><span>背景设置</span></div>
+                            <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">B</span></div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+            <!--地图数据-->
+            <div class="map-control map-data-control">
+                <button tabindex="-1" id="setDataBtn">
+                    <img src="/svg/iD-sprite/icons/icon-data.svg" class="icon light">
+                    <div class="tooltip tooltip-8 left" style="left: -160px; top: -20px;">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner">
+                            <div class="tooltip-text"><span>地图数据</span></div>
+                            <div class="keyhint-wrap"><span>快捷键：</span><span class="keyhint">F</span></div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+            <div class="map-control help-control">
+                <button tabindex="-1">
+                    <img src="/svg/iD-sprite/icons/icon-help.svg" class="icon light">
+                    <div class="tooltip tooltip-10 left">
+                        <div class="tooltip-arrow"></div>
+                        <div class="tooltip-inner"></div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <div class="map-panes">
+            <div class="fillL map-pane background-pane hide" style="display: none; right: -300px;" id="backgroundPane">
+                <div class="pane-heading"><h2>背景</h2>
+                    <button id="closeLayersBtn">
+                        <img src="/svg/iD-sprite/icons/icon-close.svg" class="icon ">
+                    </button>
+                </div>
+                <div class="pane-content">
+                    <div class="background-background-list-container">
+                        <a href="#" class="hide-toggle hide-toggle-background_list expanded" id="backgroundListHref">
+                            <img src="/svg/iD-sprite/icons/icon-down.svg" class="icon pre-text" id="backgroundImg">
+                            <span class="hide-toggle-text">背景影像</span>
+                        </a>
+                        <div class="disclosure-wrap disclosure-wrap-background_list" id="layerBackgroundList">
+                            <ul class="layer-list layer-background-list" dir="auto" id="backgroundLayerList">
+                                <li style="display: block;" class="active" id="rasterLi">
+                                    <label>
+                                        <input type="radio" name="layers" checked id="rasterLayer">
+                                        <span>谷歌遥感图</span>
+                                        <div class="tooltip tooltip-395 bottom">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="terrainLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="terrainLayer">
+                                        <span>谷歌地形图</span>
+                                        <div class="tooltip tooltip-397 bottom">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="vectorLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="vectorLayer">
+                                        <span>谷歌矢量图</span>
+                                        <div class="tooltip tooltip-399 bottom" style="left: 114px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="roadLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="roadLayer">
+                                        <span>谷歌交通图</span>
+                                        <div class="tooltip tooltip-401 bottom" style="left: 59px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="bdLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="bdLayer">
+                                        <span>百度地图</span>
+                                        <div class="tooltip tooltip-403 bottom" style="left: 107px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="bdSateLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="bdSateLayer">
+                                        <span>百度卫星地图</span>
+                                        <div class="tooltip tooltip-405 bottom" style="left: 104px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                                <li style="display: block;" id="amapLi">
+                                    <label>
+                                        <input type="radio" name="layers" id="amapLayer">
+                                        <span>高德卫星地图</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="background-overlay-list-container">
+                        <a href="#" class="hide-toggle hide-toggle-overlay_list expanded" id="overlayHref">
+                            <img src="/svg/iD-sprite/icons/icon-down.svg" class="icon pre-text" id="overlayImg">
+                            <span class="hide-toggle-text">叠加图层</span></a>
+                        <div class="disclosure-wrap disclosure-wrap-overlay_list" style="" id="overlayList">
+                            <ul class="layer-list layer-overlay-list" dir="auto">
+                                <li style="display: block;" class="" id="overlayVectorLi">
+                                    <label>
+                                        <input type="checkbox" name="layers" id="overlayVectorChk">
+                                        <span>谷歌交通图</span>
+                                        <div class="tooltip tooltip-6158 bottom" style="left: 59px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner"></div>
+                                        </div>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fillL map-pane map-data-pane hide" style="display: none; right: -300px;" id="mapDataPane">
+                <div class="pane-heading"><h2>地图数据</h2>
+                    <button id="closeDataPaneBtn">
+                        <img src="/svg/iD-sprite/icons/icon-close.svg" class="icon ">
+                    </button>
+                </div>
+                <div class="pane-content">
+                    <div class="map-data-data-layers">
+                        <a href="#" class="hide-toggle hide-toggle-data_layers expanded" id="mapDataHref">
+                            <img src="/svg/iD-sprite/icons/icon-down.svg" class="icon pre-text" id="mapDataImg">
+                            <span class="hide-toggle-text">数据图层</span>
+                        </a>
+                        <div class="disclosure-wrap disclosure-wrap-data_layers" id="mapDataLayersList">
+                            <div class="data-layer-container">
+                                <ul class="layer-list layer-list-osm">
+                                    <li class="list-item list-item-osm active"><label>
+                                        <div class="tooltip tooltip-54 bottom" style="left: 61px; top: 30px;">
+                                            <div class="tooltip-arrow"></div>
+                                            <div class="tooltip-inner">瓦片数据</div>
+                                        </div>
+                                        <input type="checkbox"><span>瓦片数据</span></label></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map-data-feature-filters">
+                        <a href="#" class="hide-toggle hide-toggle-map_features expanded" id="mapFeaturesHref">
+                            <img src="/svg/iD-sprite/icons/icon-down.svg" class="icon pre-text" id="mapFeaturesImg">
+                            <span class="hide-toggle-text">地图要素</span></a>
+                        <div class="disclosure-wrap disclosure-wrap-map_features" style="" id="mapFeaturesList">
+                            <ul class="layer-list layer-feature-list">
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top" style="left: 118px; top: -40px;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">
+                                            <div class="tooltip-text"><span>兴趣点(POI)</span></div>
+                                        </div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>点</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>交通道路</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top" style="left: 59px; top: -40px;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">
+                                            <div class="tooltip-text"><span>服务性道路、停车场通道、赛道等</span></div>
+                                        </div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>服务性道路</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top" style="left: 59px; top: -40px;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">
+                                            <div class="tooltip-text"><span>人行道，步行道路，自行车道等。</span></div>
+                                        </div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>小路</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top" style="left: 77px; top: -40px;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">
+                                            <div class="tooltip-text"><span>建筑物，遮蔽处，车库等。</span></div>
+                                        </div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>建筑物</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>土地利用要素</span></label></li>
+                                <li>
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>分界线</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>水体要素</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>铁路要素</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>电力要素</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>历史/未来要素</span></label></li>
+                                <li class="active">
+                                    <div class="tooltip tooltip-75 top">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner"></div>
+                                    </div>
+                                    <label><input type="checkbox" name="feature"><span>其他要素</span></label></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fillL map-pane issues-pane hide" style="display: none; right: -300px;">
+                <div class="pane-heading"><h2>问题</h2>
+                    <button>
+                        <svg class="icon ">
+                            <use xlink:href="#iD-icon-close"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="pane-content">
+                    <div class="issues-none">
+                        <img src="/svg/iD-sprite/icons/icon-forward.svg" class="icon pre-text">
+                        <span><strong>看起来一切正常</strong><br><span>在您编辑时遇到的任何问题都将显示在此处</span></span></div>
+                    <div class="issues-errors hide"><a href="#" class="hide-toggle hide-toggle-issues_errors expanded">
+                        <img src="/svg/iD-sprite/icons/icon-down.svg" class="icon pre-text">
+                        <span class="hide-toggle-text"></span></a>
+                        <div class="disclosure-wrap disclosure-wrap-issues_errors">
+                            <ul class="layer-list errors-list issues-list"></ul>
+                        </div>
+                    </div>
+                    <div class="issues-warnings hide"><a href="#"
+                                                         class="hide-toggle hide-toggle-issues_warnings expanded">
+                        <svg class="icon pre-text">
+                            <use xlink:href="#iD-icon-down" class="hide-toggle-icon"></use>
+                        </svg>
+                        <span class="hide-toggle-text"></span></a>
+                        <div class="disclosure-wrap disclosure-wrap-issues_warnings">
+                            <ul class="layer-list warnings-list issues-list"></ul>
+                        </div>
+                    </div>
+                    <div class="issues-rules"><a href="#" class="hide-toggle hide-toggle-issues_rules">
+                        <img src="/svg/iD-sprite/icons/icon-forward.svg" class="icon pre-text">
+                        <span class="hide-toggle-text">Rules</span></a>
+                        <div class="disclosure-wrap disclosure-wrap-issues_rules hide"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="help-wrap map-pane fillL hide">
+                <div class="pane-heading"><h2>帮助</h2>
+                    <button>
+                        <svg class="icon ">
+                            <use xlink:href="#iD-icon-close"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="pane-content">
+                    <ul class="toc">
+                        <li><a class="selected">帮助</a></li>
+                        <li><a>概览</a></li>
+                        <li><a>编辑和保存</a></li>
+                        <li><a>要素编辑器</a></li>
+                        <li><a>点</a></li>
+                        <li><a>线</a></li>
+                        <li><a>区域</a></li>
+                        <li><a>关系</a></li>
+                        <li><a>笔记</a></li>
+                        <li><a>背景影像</a></li>
+                        <li><a>街景照片</a></li>
+                        <li><a>GPS 轨迹</a></li>
+                        <li><a>质量保证</a></li>
+                        <li class="shortcuts">
+                            <div class="tooltip tooltip-71 top">
+                                <div class="tooltip-arrow"></div>
+                                <div class="tooltip-inner"></div>
+                            </div>
+                            <a>
+                                <div>键盘快捷键</div>
+                            </a></li>
+                        <li class="walkthrough"><a>
+                            <svg class="logo logo-walkthrough">
+                                <use xlink:href="#iD-logo-walkthrough"></use>
+                            </svg>
+                            <div>开始演练</div>
+                        </a></li>
+                    </ul>
+                    <div class="left-content">
+                        <div class="body"><p>欢迎使用 <a href="https://www.openstreetmap.org/"
+                                                     target="_blank">OpenStreetMap</a>
+                            的 iD 编辑器。您可以使用这个编辑器在网页浏览器内直接编辑 OpenStreetMap 地图。</p>
+                            <h3 id="开放数据">开放数据</h3>
+                            <p>您在这个地图上做出的编辑会对所有使用 OpenStreetMap
+                                的用户可见。您的编辑可以基于个人知识、实地调查、航空拍摄图片或者街景照片。从商业来源，例如谷歌地图这样的来源复制信息是被
+                                <a href="https://www.openstreetmap.org/copyright" target="_blank">严格禁止</a> 的。</p>
+                            <h3 id="在您开始之前">在您开始之前</h3>
+                            <p>您在开始编辑之前应当先了解熟悉 OpenStreetMap 和本编辑器。iD 包含了一个导览教程，可以帮助您了解编辑 OpenStreetMap
+                                的基本知识。请点击屏幕上的“开始演练”按钮以开始教程——这只会占用您大概 15 分钟。</p>
+                            <h3 id="开放源代码">开放源代码</h3>
+                            <p>iD 编辑器是一个合作开放源代码项目，您正在使用的版本是 2.14.3。其源代码 <a href="https://github.com/openstreetmap/iD"
+                                                                           target="_blank">在 GitHub</a> 上可找到。</p>
+                            <p>您可以帮助 iD <a
+                                    href="https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating"
+                                    target="_blank">翻译文本</a> 或者 <a href="https://github.com/openstreetmap/iD/issues"
+                                                                   target="_blank">报告问题</a>。</p>
+                        </div>
+                        <div class="nav"><a class="next"><span>概览
+                            <img src="/svg/iD-sprite/icons/icon-forward.svg" class="icon inline">
+                            </span></a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="fillL map-pane map-location hide" style="display: none; right: -300px;" id="geolocatePane">
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- 系统功能库 -->
+<script src="/js/sysfun.js" type="text/javascript"></script>
+<script src="/js/mouse/mousetip.js" type="text/javascript"></script>
+<script src="/js/mouse/mousekey.js" type="text/javascript"></script>
+<script src="/js/search/searchfun.js" type="text/javascript"></script>
+<script src="/libs/ol/source/baidumapsource.js" type="text/javascript"></script>
+<script src="/libs/ol/source/amapsource.js" type="text/javascript"></script>
+</body>
+</html>

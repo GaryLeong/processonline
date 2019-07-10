@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    name: test
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    cache: false
+    encoding: utf-8
+    servlet:
+      content-type: text/html
+  mvc:
+    static-path-pattern: /**
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.careland.processonline.entity  # 注意：对应实体类的路径
+
