@@ -25,4 +25,3 @@ function locateByCoord() {
 function closeGeoLocatePane() {
     showMapControlClick('geolocatePane', 'geolocateBtn', '');
 }
-

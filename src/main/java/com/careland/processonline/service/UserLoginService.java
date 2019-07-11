@@ -20,6 +20,7 @@ public class UserLoginService {
 
     /**
      * 用户登录
+     *
      * @param username
      * @param password
      * @return
@@ -31,6 +32,7 @@ public class UserLoginService {
 
     /**
      * 注册新用户
+     *
      * @param username
      * @param password
      * @param age
@@ -42,13 +44,13 @@ public class UserLoginService {
 
     /**
      * 注册新用户（方式2）
+     *
      * @param username 用户名
      * @param password 密码
-     * @param age 年龄
+     * @param age      年龄
      * @return 注册结果
      */
-    public int addUser1(String username, String password, int age)
-    {
-        return  myUserMapper.adduser1(username, password, age);
+    public int addUser1(String username, String password, int age) {
+        return myUserMapper.adduser1(username, password, age);
     }
 }
