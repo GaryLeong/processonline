@@ -32,10 +32,9 @@ function createMapLayerList() {
             //请求的媒体类型
             contentType: 'application/json;charset=UTF-8',
             //请求地址
-            url: 'http://192.168.201.71:8080/geoserver/ows?request=getLayer&service=layerInfo&version=1.0.0',
+            url: 'http://192.168.201.71:8080/geoserver/ows?request=getLayer&service=geominfo&version=1.0.0',
             //请求成功
             success: function (result) {
-                console.log(result);
                 let zNodes = getMapLayerList(result);
                 $.fn.zTree.init($("#treeDemo"), setting, zNodes);
             },
@@ -57,7 +56,7 @@ function getMapLayerList(result) {
     let zNodes = [];
     let layerLevel;
     let obj = JSON.parse(result);
-    let msg = obj[0].msg;
+    let msg = obj.msg;
     if (msg != 'success') {
         layuiLayer.open({
                 title: '提示',
@@ -66,7 +65,7 @@ function getMapLayerList(result) {
         );
         return;
     }
-    let datas = obj[0].data;
+    let datas = obj.data;
     let level1Datas = datas.filter(function (obj) {
         return obj.layerLevel == 1;
     });

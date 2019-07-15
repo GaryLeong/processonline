@@ -34,12 +34,16 @@
             <div class="inspector-body">
                 <div class="feature-list cf filtered" id="featurelist">
                     <button disabled="" class="no-results-item" style="display: none;">
-                        <img src="/svg/iD-sprite/icons/icon-alert.svg" class="icon pre-text">
+                        <svg class="icon pre-text">
+                            <use xlink:href="#iD-icon-alert"></use>
+                        </svg>
                         <span class="entity-name">在可见地图区域没有结果</span>
                     </button>
 
-                    <button class="geocode-item" style="display: none;">
-                        <div class="label"><span class="entity-name">在全球搜索...</span></div>
+                    <button class="geocode-item" style="display: block;">
+                        <div class="label">
+                            <span class="entity-name">在全球搜索...</span>
+                        </div>
                     </button>
                 </div>
             </div>
