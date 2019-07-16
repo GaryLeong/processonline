@@ -1,19 +1,43 @@
 let featurelist = document.getElementById('featurelist');
-let elements = featurelist.getElementsByClassName('feature-list-item');
-for (let i = 0, len = elements.length; i < len; i++) {
-    elements[i].addEventListener('click', featurelistitemclick(elements[i]), false);
-}
+let listDatas;
 
+/**
+ * 搜索输入框添加回车enter事件
+ */
 $('#searchInput').keypress(function (event) {
     //回车事件
     if (event.which === 13) {
         //根据ID获取属性数据
         var id = $('#searchInput').val();
-        alert($('#searchInput').val());
         getObjectByID(id);
     }
 });
 
+/**
+ * 监听输入事件，输入为空时清空输入框
+ */
+$('#searchInput').on('input propertychange', function () {
+    //获取input 元素,并实时监听用户输入
+    if ($('#searchInput').val() == null || $('#searchInput').val() == '') {
+        let innerHtml = "<button disabled=\"\" class=\"no-results-item\" style=\"display: none;\">" +
+            "<svg class=\"icon pre-text\">" +
+            "<use xlink:href=\"#iD-icon-alert\"></use></svg>" +
+            "<span class=\"entity-name\">" +
+            "在可见地图区域没有结果\n" +
+            "</span></button>" +
+            "<button class=\"geocode-item\" style=\"display: none;\">" +
+            "<div class=\"label\">" +
+            "<span class=\"entity-name\">" +
+            "在全球搜索..." +
+            "</span></div></button>";
+        featurelist.innerHTML = innerHtml;
+    }
+});
+
+/**
+ * 根据id获取对象
+ * @param id
+ */
 function getObjectByID(id) {
     //ajax发送请求
     $.ajax({
@@ -52,39 +76,57 @@ function drawFeaturelist(result) {
         return;
     }
     var datas = obj.data;
-    var objName = datas[0].features[0].properties.ObjName;
-    /*  <button class="feature-list-item" style="opacity: 1;">
-      <div class="label">
-      <img src="/svg/iD-sprite/icons/icon-sidebar-left.svg" class="icon ">
-      <span class="entity-type">驾驶线路</span>
-      <span class="entity-name">深南大道</span>
-      </div>
-      </button>*/
-
-    var btn = document.createElement("button");
-    btn.setAttribute('class', 'feature-list-item');
-    btn.setAttribute('style', 'opacity: 1;');
-    var labelDiv = document.createElement("div");
-    labelDiv.setAttribute('class', 'label');
-    btn.appendChild(labelDiv);
-    var img = document.createElement('img');
-    img.setAttribute('src', '/svg/iD-sprite/icons/icon-line.svg');
-    img.setAttribute('class', 'icon ');
-    labelDiv.appendChild(img);
-    var typeSpan = document.createElement('span');
-    typeSpan.setAttribute('class', 'entity-type');
-    labelDiv.appendChild(typeSpan);
-    var nameSpan = document.createElement('span');
-    nameSpan.setAttribute('class', 'entity-name');
-    nameSpan.innerText = objName;
-    labelDiv.appendChild(nameSpan);
-    var geocodeItem = $('.geocode-item');
-    geocodeItem.insertAfter(btn, geocodeItem);
+    var type = '干线道路';
+    if (datas != null && datas.length > 0) {
+        listDatas = datas;
+    }
+    for (let i = 0, len = listDatas[0].features.length; i < len; i++) {
+        let objName = listDatas[0].features[i].properties.ObjName;
+        let OID = listDatas[0].features[i].properties.OID;
+        let innerHtml = "<button disabled=\"\" class=\"no-results-item\" style=\"display: none;\">" +
+            "<img src=\"/svg/iD-sprite/icons/icon-alert.svg\" class=\"icon pre-text\">" +
+            "<span class=\"entity-name\">" +
+            "在可见地图区域没有结果" +
+            "</span>" +
+            "</button>";
+        innerHtml += "<button class=\"feature-list-item\" style=\"opacity: 1;\" id=\"" + OID + "\" > " +
+            "<div class=\"label\">" +
+            "<img src=\"/svg/iD-sprite/icons/icon-line.svg\" class=\"icon pre-text\">" +
+            "<span class=\"entity-type\">" + type + "</span>" +
+            "<span class=\"entity-name\">" +
+            objName +
+            "</span></div></button>";
+        innerHtml += "<button class=\"geocode-item\" style=\"display: none;\">" +
+            "<div class=\"label\">\n" +
+            "<span class=\"entity-name\">在全球搜索..." +
+            "</span></div></button>";
+        featurelist.innerHTML = innerHtml;
+    }
+    //添加点击监听事件
+    $('.feature-list-item').on('click', function () {
+        featureItemClick($(this)[0].id);
+    });
 }
 
 /**
  * 搜索项点击事件-点击定位
+ * @param element
  */
-function featurelistitemclick(element) {
+function featureItemClick(id) {
+    var itemData = getFeaById(id);
+    //定位
+    var coords = itemData.geometry.coordinates[0];
+    map.getView().setCenter(coords[0]);
+}
 
+/**
+ * 通过id获取feature
+ * @param id
+ * @returns {*}
+ */
+function getFeaById(id) {
+    for (let i = 0, len = listDatas[0].features.length; i < len; i++) {
+        if (listDatas[i].features[i].properties.OID == id)
+            return listDatas[i].features[i];
+    }
 }
